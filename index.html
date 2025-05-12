@@ -1,0 +1,856 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JaghaBanao - Sell Your Unwanted Items</title>
+
+    <script src="https://cdn.tailwindcss.com/3.4.16"></script>
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        // Current Palette Mapped to Roles
+                        'site-background': '#FFFFFF', // White background
+                        'site-text': '#19376D', // Dark Blue for body text
+                        'heading-color': '#19376D', // Dark Blue for headings
+                        'primary-button-bg': '#50A4E4', // Light Blue for primary button background
+                        'primary-button-text': '#19376D', // Dark Blue text on Light Blue button (Note: Low contrast)
+                        'primary-button-hover-bg': '#19376D', // Dark Blue for primary button hover background
+                        'primary-button-hover-text': '#FFFFFF', // White text on Dark Blue hover
+                        'secondary-button-bg': '#8CC63F', // Green for secondary button background
+                        'secondary-button-text': '#19376D', // Dark Blue text on Green button (Note: Low contrast)
+                        'secondary-button-border': '#19376D', // Dark Blue border for secondary button
+                        'secondary-button-hover-bg': '#19376D', // Dark Blue for secondary button hover background
+                        'secondary-button-hover-text': '#FFFFFF', // White text on Dark Blue hover
+                        'section-background': '#8CC63F', // Green for secondary sections/cards
+                        'accent-highlight': '#50A4E4', // Light Blue for progress bar, focus border (Stars and Icons use context now)
+                        'border-element': '#19376D', // Dark Blue for borders, dividers
+                        'link-default': '#19376D', // Dark Blue for links (Good contrast on White)
+                        'link-hover': '#50A4E4', // Light Blue for link hover (Note: Low contrast on White)
+                        'footer-background': '#19376D', // Dark Blue for footer background
+                        'footer-text': '#FFFFFF', // White for footer text
+                        'focus-border': '#50A4E4', // Light Blue for input focus border
+
+                        // Added from previous palette as requested
+                        'light-section-background': '#DBE8D8', // Very Light Green/Minty Grey for specific sections
+                    },
+                    borderRadius: {
+                        'none': '0px',
+                        'sm': '4px',
+                        DEFAULT: '8px', // Default for most buttons and inputs
+                        'md': '12px',
+                        'lg': '16px',
+                        'xl': '20px',
+                        '2xl': '24px',
+                        '3xl': '32px',
+                        'full': '9999px', // Fully rounded (e.g., circular buttons)
+                        'button': '8px' // Specific radius used for custom buttons
+                    }
+                }
+            }
+        };
+    </script>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Pacifico&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/remixicon/4.6.0/remixicon.min.css">
+    <!-- Poppins Font Link -->
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@600&display=swap" rel="stylesheet">
+
+    <style>
+        /* Default font for the body */
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+
+        /* Icon color styling is handled by Tailwind classes now */
+        /* [class^="ri-"], [class*=" ri-"] { color: #19376D !important; } <- Removed */
+
+
+        /* File upload drag-and-drop container */
+        .file-upload-container {
+            /* Using a color from the palette for the border */
+            border: 2px dashed #8CC63F; /* Green border */
+            transition: all 0.3s ease;
+        }
+
+        /* When a file is being dragged over */
+        .file-upload-container.dragover {
+            /* Using colors from the palette */
+            border-color: #50A4E4; /* Light Blue border */
+            background-color: rgba(80, 164, 228, 0.05); /* faint Light Blue background */
+        }
+
+        /* Upload progress bar animation */
+        .progress-bar {
+            transition: width 0.3s ease;
+        }
+
+        /* Focused input field border and shadow */
+        .form-input:focus {
+            outline: none;
+            /* Using a color from the palette */
+            border-color: #50A4E4; /* Light Blue border */
+            /* Adjust box-shadow color base using Light Blue RGB */
+            box-shadow: 0 0 0 3px rgba(80, 164, 228, 0.1); /* subtle Light Blue glow */
+        }
+
+        /* Image preview styling */
+        .image-preview {
+            position: relative;
+            width: 100px;
+            height: 100px;
+            margin-right: 10px;
+            margin-bottom: 10px;
+        }
+
+        .image-preview img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        /* Remove icon on image preview */
+        .remove-image {
+            position: absolute;
+            top: -8px;
+            right: -8px;
+            /* Using a color from the palette */
+            background: #FFFFFF; /* White background for visibility */
+            border-radius: 50%;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+            /* Adjust icon color if needed */
+            /* color: #19376D; */
+        }
+
+        /* Hide number input spinners */
+        input[type="number"]::-webkit-inner-spin-button,
+        input[type="number"]::-webkit-outer-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+        }
+
+        /* Style for the 'More' button in footer */
+        .footer-more-button {
+            color: #FFFFFF; /* White on Dark Blue footer */
+        }
+         .footer-more-button:hover {
+            text-decoration: underline;
+         }
+    </style>
+
+        <script type="text/javascript" src="https://cdn.emailjs.com/dist/email.min.js"></script>
+    <script type="text/javascript">
+    (function(){
+        emailjs.init("c6oJ4oB3vEoSp04nS"); // Replace with your actual Public Key
+    })();
+        </script>
+
+</head>
+
+<body class="bg-site-background min-h-screen text-site-text">
+    <header class="bg-site-background shadow-sm">
+        <div class="container mx-auto px-4 py-4 flex justify-between items-center">
+            <a href="index.html">
+                <img src="Untitled_design__3_-removebg-preview.png" alt="Logo" style="height: 60px; cursor: pointer;">
+            </a>
+
+            <nav class="hidden md:flex space-x-8">
+                <a href="tel:+923290329022" class="text-site-text font-medium hover:text-link-hover transition">0329-0329022</a>
+                <a href="#service" class="text-site-text font-medium hover:text-link-hover transition">Services</a>
+                <a href="#form-section" class="text-site-text font-medium hover:text-link-hover transition">Contact</a>
+                <a href="blog.html" class="text-site-text font-medium hover:text-link-hover transition">Blog</a>
+                <a href="#faq-section" class="text-site-text font-medium hover:text-link-hover transition">F&Qs</a>
+            </nav>
+            <div class="md:hidden">
+                <button id="mobile-menu-button" class="w-10 h-10 flex items-center justify-center">
+                    <i class="ri-menu-line text-site-text ri-lg"></i>
+                </button>
+                <div id="mobile-menu" class="hidden fixed inset-0 z-50">
+                    <div class="absolute inset-0 bg-site-text bg-opacity-50"></div>
+                    <div class="absolute right-0 top-0 h-full w-64 bg-site-background shadow-lg">
+                        <div class="p-4 border-b border-border-element">
+                            <button id="close-menu" class="w-10 h-10 flex items-center justify-center ml-auto">
+                                <i class="ri-close-line text-site-text ri-lg"></i>
+                            </button>
+                        </div>
+                        <div class="p-4">
+                            <a href="tel:+923290329022" target="_blank" class="block py-2 text-site-text hover:text-link-hover transition">0329-0329022</a>
+                            <a href="#service" class="block py-2 text-site-text hover:text-link-hover transition">Services</a>
+                            <a href="#form-section" class="block py-2 text-site-text hover:text-link-hover transition">Contact</a>
+                            <a href="blog.html" target="_blank" class="block py-2 text-site-text hover:text-link-hover transition">Blog</a>
+                            <a href="#faq-section" class="block py-2 text-site-text hover:text-link-hover transition">F&Qs</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+    <section class="relative py-16 overflow-hidden" style="background-image: url('iiii.avif'); background-size: cover; background-position: center;">
+        <div class="absolute inset-0 bg-gradient-to-r from-site-background via-site-background/90 to-site-background/20"></div>
+        <div class="container mx-auto px-4 relative">
+            <div class="max-w-2xl">
+                <h1 class="text-4xl md:text-5xl font-bold text-heading-color mb-4">Turn Your Unwanted Items Into Cash</h1>
+                <p class="text-lg text-site-text mb-8">We buy junk items from your home, garage, or storage room. Fill out our simple form, and we'll handle the rest!</p>
+                <div class="flex flex-wrap gap-4">
+                    <a href="#form-section" class="bg-primary-button-bg text-primary-button-text px-6 py-3 rounded-button font-medium hover:bg-primary-button-hover-bg hover:text-primary-button-hover-text transition shadow-md whitespace-nowrap">Sell Your Items Now</a>
+                    <a href="#faq-section" class="bg-secondary-button-bg text-secondary-button-text px-6 py-3 rounded-button font-medium border border-secondary-button-border hover:bg-secondary-button-hover-bg hover:text-secondary-button-hover-text transition whitespace-nowrap">Learn More</a>
+                </div>
+            </div>
+        </div>
+    </section>
+    <section id="worksection" class="py-16 bg-site-background">
+        <div class="container mx-auto px-4">
+            <div class="text-center mb-12">
+                <h2 class="text-3xl font-bold text-heading-color mb-4">How It Works</h2>
+                <p class="text-site-text max-w-2xl mx-auto">Our process is simple and hassle-free. We make it easy for you to sell your unwanted items.</p>
+            </div>
+            <div class="grid md:grid-cols-3 gap-8">
+                <a href="#form-section" class="bg-section-background p-6 rounded-lg shadow-sm text-center hover:shadow-md transition block">
+                    <div class="w-16 h-16 bg-accent-highlight/10 rounded-full flex items-center justify-center mx-auto mb-4">
+                        <i class="ri-file-list-3-line ri-2x"></i>
+                    </div>
+                    <h3 class="text-xl font-semibold mb-2 text-heading-color">1. Fill The Form</h3>
+                    <p class="text-site-text">Provide your contact details and information about your items.</p>
+                </a>
+
+                <a href="tel:+923290329022" target="_blank" class="bg-section-background p-6 rounded-lg shadow-sm text-center hover:shadow-md transition block">
+                    <div class="w-16 h-16 bg-accent-highlight/10 rounded-full flex items-center justify-center mx-auto mb-4">
+                        <i class="ri-phone-line ri-2x"></i>
+                    </div>
+                    <h3 class="text-xl font-semibold mb-2 text-heading-color">2. Get A Quote</h3>
+                    <p class="text-site-text">Call us at +92 329 0329022 for an immediate quote.</p>
+                </a>
+
+                <a href="#faq-section" class="bg-section-background p-6 rounded-lg shadow-sm text-center hover:shadow-md transition block">
+                    <div class="w-16 h-16 bg-accent-highlight/10 rounded-full flex items-center justify-center mx-auto mb-4">
+                        <i class="ri-truck-line ri-2x"></i>
+                    </div>
+                    <h3 class="text-xl font-semibold mb-2 text-heading-color">3. We Pick Up & Pay</h3>
+                    <p class="text-site-text">Learn more about our pickup and payment process.</p>
+                </a>
+            </div>
+
+    </section>
+    <section id="form-section" class="relative py-16" style="background-image: url('ii.avif'); background-size: cover; background-position: center; background-repeat: no-repeat;">
+         <div class="absolute inset-0 bg-[#19376D] opacity-80 z-0"></div> <div class="container mx-auto px-4 relative z-10"> <div class="max-w-3xl mx-auto bg-site-background rounded-xl shadow-md overflow-hidden">
+                <div class="p-8">
+                    <h2 class="text-2xl font-bold text-heading-color mb-2">Sell Your Unwanted Items</h2>
+                    <p class="text-site-text mb-8">Fill out the form below and we'll get back to you with an offer.</p>
+                    <div class="w-full bg-site-background rounded-full h-2 mb-8">
+                        <div class="progress-bar bg-accent-highlight h-2 rounded-full" style="width: 0%"></div>
+                    </div>
+                    <form id="junk-form" class="space-y-6">
+                        <div>
+                            <label for="fullname" class="block text-sm font-medium text-site-text mb-1">Full Name <span class="text-red-500">*</span></label>
+                            <input type="text" id="fullname" name="fullname" required class="form-input w-full px-4 py-3 border border-border-element rounded focus:border-focus-border focus:ring-0" placeholder="Muhammad Ali">
+                        </div>
+                        <div class="grid md:grid-cols-2 gap-6">
+                            <div>
+                                <label for="phone" class="block text-sm font-medium text-site-text mb-1">Phone Number <span class="text-red-500">*</span></label>
+                                <div class="relative">
+                                    <div class="absolute inset-y-0 left-0 flex items-center pl-4 pointer-events-none">
+                                        <i class="ri-phone-line"></i>
+                                    </div>
+                                     <input type="tel" id="phone" name="phone" required class="form-input w-full pl-10 pr-4 py-3 border border-border-element rounded focus:border-focus-border focus:ring-0" placeholder="0300-1234567">
+                                </div>
+                            </div>
+                            <div>
+                                <label for="email" class="block text-sm font-medium text-site-text mb-1">Email Address <span class="text-red-500">*</span></label>
+                                <div class="relative">
+                                    <div class="absolute inset-y-0 left-0 flex items-center pl-4 pointer-events-none">
+                                        <i class="ri-mail-line"></i>
+                                    </div>
+                                     <input type="email" id="email" name="email" required class="form-input w-full pl-10 pr-4 py-3 border border-border-element rounded focus:border-focus-border focus:ring-0" placeholder="Ali@example.com">
+                                </div>
+                            </div>
+                        </div>
+                        <div>
+                            <label for="address" class="block text-sm font-medium text-site-text mb-1">Complete Address <span class="text-red-500">*</span></label>
+                             <textarea id="address" name="address" rows="3" required class="form-input w-full px-4 py-3 border border-border-element rounded focus:border-focus-border focus:ring-0" placeholder="123 Street, House 4B, 12 Bazar block, Lahore, Pakistan."></textarea>
+                        </div>
+                        <div>
+                            <label for="description" class="block text-sm font-medium text-site-text mb-1">Item Description (Optional)</label>
+                             <textarea id="description" name="description" rows="4" class="form-input w-full px-4 py-3 border border-border-element rounded focus:border-focus-border focus:ring-0" placeholder="Please describe the items you want to sell (type, condition, quantity, etc.)"></textarea>
+                        </div>
+                        <div class="pt-4">
+                            <button type="submit" class="w-full bg-primary-button-bg text-primary-button-text py-3 px-6 rounded-button font-medium hover:bg-primary-button-hover-bg hover:text-primary-button-hover-text transition shadow-md flex items-center justify-center whitespace-nowrap">
+                                <span>Submit Request</span>
+                                <i class="ri-arrow-right-line ml-2"></i>
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </section>
+    <section class="py-16 bg-site-background">
+        <div class="container mx-auto px-4">
+            <div class="text-center mb-12">
+                <h2 class="text-3xl font-bold text-heading-color mb-4">What Our Customers Say</h2>
+                <p class="text-site-text max-w-2xl mx-auto">Don't just take our word for it. Here's what our happy customers have to say about our services.</p>
+            </div>
+            <div class="grid md:grid-cols-3 gap-8">
+                <div class="bg-section-background p-6 rounded-lg shadow-sm">
+                    <div class="flex items-center mb-4">
+                        <div class="text-site-text">
+                            <i class="ri-star-fill"></i>
+                            <i class="ri-star-fill"></i>
+                            <i class="ri-star-fill"></i>
+                            <i class="ri-star-fill"></i>
+                            <i class="ri-star-fill"></i>
+                        </div>
+                    </div>
+                    <p class="text-site-text mb-4">"I had a garage full of old furniture and electronics that I needed to get rid of. Jaghabanao made the process so easy! They gave me a fair price and picked everything up the next day."</p>
+                    <div class="flex items-center">
+                        <div class="w-10 h-10 bg-border-element/20 rounded-full flex items-center justify-center mr-3">
+                            <i class="ri-user-line"></i>
+                        </div>
+                        <div>
+                            <h4 class="font-medium text-heading-color">Zain-ul-Abideen</h4>
+                            <p class="text-site-text text-sm opacity-90">Sadar, LHR</p>
+                        </div>
+                    </div>
+                </div>
+                 <div class="bg-section-background p-6 rounded-lg shadow-sm">
+                    <div class="flex items-center mb-4">
+                         <div class="text-site-text">
+                            <i class="ri-star-fill"></i>
+                            <i class="ri-star-fill"></i>
+                            <i class="ri-star-fill"></i>
+                            <i class="ri-star-fill"></i>
+                            <i class="ri-star-fill"></i>
+                        </div>
+                    </div>
+                    <p class="text-site-text mb-4">"I was clearing out my parents' home after they downsized and had so many items to get rid of. The team was professional, prompt, and paid a fair price for everything. Highly recommend!"</p>
+                    <div class="flex items-center">
+                         <div class="w-10 h-10 bg-border-element/20 rounded-full flex items-center justify-center mr-3">
+                            <i class="ri-user-line"></i>
+                        </div>
+                        <div>
+                            <h4 class="font-medium text-heading-color">Hussain Ali</h4>
+                            <p class="text-site-text text-sm opacity-90">DHA phase 8, LHR</p>
+                        </div>
+                    </div>
+                </div>
+                 <div class="bg-section-background p-6 rounded-lg shadow-sm">
+                    <div class="flex items-center mb-4">
+                         <div class="text-site-text">
+                            <i class="ri-star-fill"></i>
+                            <i class="ri-star-fill"></i>
+                            <i class="ri-star-fill"></i>
+                            <i class="ri-star-fill"></i>
+                            <i class="ri-star-half-fill"></i>
+                        </div>
+                    </div>
+                    <p class="text-site-text mb-4">"minay apana storage unit jaldi khali karwana tha. minay in ki websit par chezon ki tafseel aplod ki, isi dan afr mil gai, or 48 ghanton ke andar sab kach atha liya gaya. yah sara kaam bahat hi aasan tha!"</p>
+                    <div class="flex items-center">
+                         <div class="w-10 h-10 bg-border-element/20 rounded-full flex items-center justify-center mr-3">
+                            <i class="ri-user-line"></i>
+                        </div>
+                        <div>
+                            <h4 class="font-medium text-heading-color">Tariq Sab</h4>
+                            <p class="text-site-text text-sm opacity-90">Samnabad, LHR</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <section id="faq-section" class="py-16 bg-site-background">
+        <div class="container mx-auto px-4">
+            <div class="text-center mb-12">
+                <h2 class="text-3xl font-bold text-heading-color mb-4">Frequently Asked Questions</h2>
+                <p class="text-site-text max-w-2xl mx-auto">Find answers to common questions about our junk buying service.</p>
+            </div>
+            <div class="max-w-3xl mx-auto">
+                <div class="space-y-4">
+                    <div class="border border-border-element rounded-lg overflow-hidden">
+                        <button class="faq-toggle w-full flex justify-between items-center p-4 bg-section-background hover:bg-site-background transition">
+                            <span class="font-medium text-heading-color text-left">What kind of junk or unused items do you buy?</span>
+                             <i class="ri-arrow-down-s-line text-border-element ri-lg faq-icon"></i>
+                        </button>
+                        <div class="faq-content hidden p-4 bg-light-section-background border-t border-border-element">
+                            <p class="text-site-text">We buy almost anything that's no longer useful to you—old furniture, broken electronics, scrap metal, appliances, tools, storeroom waste, and more. If it's taking up space, we'll likely take it!</p>
+                        </div>
+                    </div>
+                     <div class="border border-border-element rounded-lg overflow-hidden">
+                        <button class="faq-toggle w-full flex justify-between items-center p-4 bg-section-background hover:bg-site-background transition">
+                            <span class="font-medium text-heading-color text-left">Do I need to move the items or prepare them for pickup?</span>
+                             <i class="ri-arrow-down-s-line text-border-element ri-lg faq-icon"></i>
+                        </button>
+                        <div class="faq-content hidden p-4 bg-light-section-background border-t border-border-element">
+                            <p class="text-site-text">No, not at all! Our team handles everything from lifting to loading. You just show us what needs to go—we'll pick it up and you get paid. It's completely hassle-free.</p>
+                        </div>
+                    </div>
+                     <div class="border border-border-element rounded-lg overflow-hidden">
+                        <button class="faq-toggle w-full flex justify-between items-center p-4 bg-section-background hover:bg-site-background transition">
+                            <span class="font-medium text-heading-color text-left">How do you pay for the items?</span>
+                             <i class="ri-arrow-down-s-line text-border-element ri-lg faq-icon"></i>
+                        </button>
+                        <div class="faq-content hidden p-4 bg-light-section-background border-t border-border-element">
+                            <p class="text-site-text">We offer fast and flexible payment options including cash on pickup, bank transfer, and digital wallets like JazzCash, Easypaisa, Sadapay, and NayaPay. You choose what's most convenient for you.</p>
+                        </div>
+                    </div>
+                    <div class="border border-border-element rounded-lg overflow-hidden">
+                        <button class="faq-toggle w-full flex justify-between items-center p-4 bg-section-background hover:bg-site-background transition">
+                            <span class="font-medium text-heading-color text-left">How quickly can you remove items from my house?</span>
+                             <i class="ri-arrow-down-s-line text-border-element ri-lg faq-icon"></i>
+                        </button>
+                        <div class="faq-content hidden p-4 bg-light-section-background border-t border-border-element">
+                            <p class="text-site-text">We usually offer same-day or next-day pickups. Just contact us, and we'll schedule a convenient time to come, collect the items, and pay you.</p>
+                        </div>
+                    </div>
+                     <div class="border border-border-element rounded-lg overflow-hidden">
+                        <button class="faq-toggle w-full flex justify-between items-center p-4 bg-section-background hover:bg-site-background transition">
+                            <span class="font-medium text-heading-color text-left">Which areas do you currently serve?</span>
+                             <i class="ri-arrow-down-s-line text-border-element ri-lg faq-icon"></i>
+                        </button>
+                        <div class="faq-content hidden p-4 bg-light-section-background border-t border-border-element">
+                            <p class="text-site-text">We offer our junk removal and buying service in Lahore and nearby areas. Submit your location and items, and we'll confirm if we can reach you.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <section class="py-16 bg-site-background">
+        <div class="container mx-auto px-4">
+            <div class="grid md:grid-cols-2 gap-12 items-center">
+                <div>
+                    <h2 class="text-3xl font-bold text-heading-color mb-4">Contact Us</h2>
+                    <p class="text-site-text mb-6">Have questions or need more information? Reach out to us directly.</p>
+                    <div class="space-y-4">
+                         <div class="flex items-start">
+                             <div class="w-10 h-10 bg-accent-highlight/10 rounded-full flex items-center justify-center mr-4 mt-1">
+                                <i class="ri-phone-line"></i>
+                            </div>
+                            <div>
+                                <h3 class="font-medium text-heading-color">Phone</h3>
+                                <a href="tel:+923290329022" target="_blank" class="text-link-default hover:text-link-hover hover:underline block">+92 329 0329022</a>
+                                <p class="text-site-text text-sm opacity-90">Monday-Sunday, 8am-10pm</p>
+                            </div>
+                        </div>
+                         <div class="flex items-start">
+                             <div class="w-10 h-10 bg-accent-highlight/10 rounded-full flex items-center justify-center mr-4 mt-1">
+                                 <i class="ri-mail-line"></i>
+                            </div>
+                            <div>
+                                <h3 class="font-medium text-heading-color">Email</h3>
+                                <a href="mailto:jaghabanao@gmail.com" target="_blank" class="text-link-default hover:text-link-hover hover:underline block">jaghabanao@gmail.com</a>
+                                <p class="text-site-text text-sm opacity-90">We'll respond within 24 hours</p>
+                            </div>
+                        </div>
+                         <div class="flex items-start">
+                             <div class="w-10 h-10 bg-accent-highlight/10 rounded-full flex items-center justify-center mr-4 mt-1">
+                                 <i class="ri-map-pin-line"></i>
+                            </div>
+                            <div>
+                                <h3 class="font-medium text-heading-color">Office</h3>
+                                <a href="https://maps.app.goo.gl/b5UT8dW4rXGjPdqr9" target="_blank" class="text-link-default hover:text-link-hover hover:underline block">
+                                    Street # 19, House # 15<br>
+                                    Main Bazar #2, Gaziabad<br>
+                                    Lahore, Pakistan
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="mt-8">
+                        <h3 class="font-medium text-heading-color mb-3">Follow Us</h3>
+                        <div class="flex space-x-4">
+                             <a href="#" target="_blank" class="w-10 h-10 bg-section-background rounded-full flex items-center justify-center hover:bg-accent-highlight/20 transition">
+                                <i class="ri-facebook-fill text-site-text"></i>
+                            </a>
+                             <a href="#" target="_blank" class="w-10 h-10 bg-section-background rounded-full flex items-center justify-center hover:bg-accent-highlight/20 transition">
+                                <i class="ri-instagram-line text-site-text"></i>
+                            </a>
+                             <a href="https://www.tiktok.com/@yourusername" target="_blank" class="w-10 h-10 bg-section-background rounded-full flex items-center justify-center hover:bg-accent-highlight/20 transition">
+                                <i class="ri-tiktok-fill text-site-text text-xl"></i>
+                            </a>
+                             <a href="https://www.youtube.com/@Jaghabanao" class="w-10 h-10 bg-section-background rounded-full flex items-center justify-center hover:bg-accent-highlight/20 transition" target="_blank">
+                                <i class="ri-youtube-line text-site-text"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                <div>
+                    <div class="bg-section-background p-8 rounded-lg shadow-sm">
+                        <h3 class="text-xl font-semibold text-heading-color mb-4">Business Hours</h3>
+                        <ul class="space-y-3">
+                            <li class="flex justify-between">
+                                <span class="text-site-text">Sunday - Thursday</span>
+                                <span class="font-medium text-heading-color">8:00 AM - 10:00 PM</span>
+                            </li>
+                            <li class="flex justify-between">
+                                <span class="text-site-text">Friday</span>
+                                <span class="font-medium text-heading-color">8:00 AM - 1:00 PM<br>2:00 PM - 10:00 PM</span>
+                            </li>
+                            <li class="flex justify-between">
+                                <span class="text-site-text">Saturday</span>
+                                <span class="font-medium text-heading-color">8:00 AM - 6:00 PM</span>
+                            </li>
+                        </ul>
+                        <div class="border-t border-border-element my-6 pt-6">
+                            <h3 class="text-xl font-semibold text-heading-color mb-4">Service Areas</h3>
+                            <p class="text-site-text mb-4">We currently service all areas in Lahore, including:</p>
+                            <ul class="grid grid-cols-2 gap-2">
+                                 <li class="flex items-center">
+                                    <i class="ri-checkbox-circle-line text-accent-highlight mr-2"></i>
+                                    <span class="text-site-text">DHA</span>
+                                </li>
+                                 <li class="flex items-center">
+                                     <i class="ri-checkbox-circle-line text-accent-highlight mr-2"></i>
+                                    <span class="text-site-text">Gulberg</span>
+                                </li>
+                                 <li class="flex items-center">
+                                     <i class="ri-checkbox-circle-line text-accent-highlight mr-2"></i>
+                                    <span class="text-site-text">Walton</span>
+                                </li>
+                                 <li class="flex items-center">
+                                     <i class="ri-checkbox-circle-line text-accent-highlight mr-2"></i>
+                                    <span class="text-site-text">Canal Road</span>
+                                </li>
+                                 <li class="flex items-center">
+                                     <i class="ri-checkbox-circle-line text-accent-highlight mr-2"></i>
+                                    <span class="text-site-text">Cantt</span>
+                                </li>
+                                 <li class="flex items-center">
+                                     <i class="ri-checkbox-circle-line text-accent-highlight mr-2"></i>
+                                    <span class="text-site-text">All Lahore Areas</span>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <footer class="bg-footer-background text-footer-text pt-12 pb-6">
+        <div class="container mx-auto px-4">
+            <div class="grid md:grid-cols-4 gap-8 mb-8">
+                <div>
+                    <a href="#" class="inline-block mb-4">
+                        <span class="text-2xl font-semibold tracking-wide text-footer-text font-[Poppins]">
+                            Jagha Banao
+                        </span>
+                    </a>
+                    <p class="text-footer-text opacity-90 mb-4">Turning your unwanted items into cash. We make the process of selling your junk easy, fast, and profitable in Lahore.</p>
+                    <div class="flex space-x-4">
+                        <a href="#" class="text-footer-text opacity-90 hover:text-accent-highlight transition">
+                             <i class="ri-facebook-fill"></i>
+                        </a>
+                        <a href="#" class="text-footer-text opacity-90 hover:text-accent-highlight transition">
+                             <i class="ri-instagram-line"></i>
+                        </a>
+                        <a href="#" class="text-footer-text opacity-90 hover:text-accent-highlight transition">
+                             <i class="ri-twitter-x-line"></i>
+                        </a>
+                        <a href="#" class="text-footer-text opacity-90 hover:text-accent-highlight transition">
+                             <i class="ri-youtube-line"></i>
+                        </a>
+                    </div>
+                </div>
+                <div>
+                    <h4 class="text-lg font-semibold mb-4">Quick Links</h4>
+                    <ul class="space-y-2">
+                        <li><a href="index.html" class="text-footer-text opacity-90 hover:text-accent-highlight transition">Home</a></li>
+                        <li><a href="#worksection" class="text-footer-text opacity-90 hover:text-accent-highlight transition">About Us</a></li>
+                        <li><a href="#service" class="text-footer-text opacity-90 hover:text-accent-highlight transition">Services</a></li>
+                        <li><a href="#faq-section" class="text-footer-text opacity-90 hover:text-accent-highlight transition">FAQs</a></li>
+                        <li><a href="#form-section" class="text-footer-text opacity-90 hover:text-accent-highlight transition">Contact</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 id="service" class="text-lg font-semibold mb-4">Services</h4>
+                    <ul class="space-y-2" id="services-list">
+                         <li><a href="#" class="text-footer-text opacity-90 hover:text-accent-highlight transition">Junk Buying</a></li>
+                        <li><a href="#" class="text-footer-text opacity-90 hover:text-accent-highlight transition">Furniture Removal</a></li>
+                        <li><a href="#" class="text-footer-text opacity-90 hover:text-accent-highlight transition">Appliance Pickup</a></li>
+                        <li><a href="#" class="text-footer-text opacity-90 hover:text-accent-highlight transition">Electronics Recycling</a></li>
+                        <div id="extra-services" class="hidden">
+                            <li><a href="#" class="text-footer-text opacity-90 hover:text-accent-highlight transition">Scrap Metal Collection</a></li>
+                            <li><a href="#" class="text-footer-text opacity-90 hover:text-accent-highlight transition">Broken Item Disposal</a></li>
+                            <li><a href="#" class="text-footer-text opacity-90 hover:text-accent-highlight transition">Home & Garage Cleanout</a></li>
+                            <li><a href="#" class="text-footer-text opacity-90 hover:text-accent-highlight transition">Storage Room Cleanout</a></li>
+                            <li><a href="#" class="text-footer-text opacity-90 hover:text-accent-highlight transition">Used Item Pickup</a></li>
+                            <li><a href="#" class="text-footer-text opacity-90 hover:text-accent-highlight transition">Clutter & Waste Removal</a></li>
+                            <li><a href="#" class="text-footer-text opacity-90 hover:text-accent-highlight transition">Instant Cash for Junk</a></li>
+                            <li><a href="#" class="text-footer-text opacity-90 hover:text-accent-highlight transition">Eco-Friendly Disposal</a></li>
+                        </div>
+                    </ul>
+                     <button onclick="toggleServices()" class="mt-2 text-sm footer-more-button">More</button>
+                </div>
+
+                <div>
+                    <h4 class="text-lg font-semibold mb-4">Contact Info</h4>
+                    <ul class="space-y-3">
+                         <li class="flex items-start">
+                            <i class="ri-map-pin-line mr-3 mt-1"></i>
+                            <a href="https://maps.app.goo.gl/b5UT8dW4rXGjPdqr9" target="_blank" class="hover:underline text-footer-text opacity-90">
+                                Street # 19, House # 15<br>
+                                Main Bazar #2, Gaziabad<br>
+                                Lahore, Pakistan
+                            </a>
+                        </li>
+                        <li class="flex items-center">
+                            <i class="ri-phone-line mr-3"></i>
+                            <a href="tel:+923290329022" target="_blank" class="hover:underline text-footer-text opacity-90">+923290329022</a>
+                        </li>
+                        <li class="flex items-center">
+                            <i class="ri-mail-line mr-3"></i>
+                            <a href="mailto:jaghabanao@gmail.com" target="_blank" class="hover:underline text-footer-text opacity-90">jaghabanao@gmail.com</a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            <div class="border-t border-white pt-6 mt-6">
+                <div class="flex flex-col md:flex-row justify-between items-center">
+                    <p class="text-footer-text opacity-90 text-sm mb-4 md:mb-0">© 2025 Jagha Banao. All rights reserved.</p>
+                    <div class="flex space-x-4">
+                        <a href="#" class="text-footer-text opacity-90 hover:text-accent-highlight text-sm transition">Privacy Policy</a>
+                        <a href="#" class="text-footer-text opacity-90 hover:text-accent-highlight text-sm transition">Terms of Service</a>
+                        <a href="#" class="text-footer-text opacity-90 hover:text-accent-highlight text-sm transition">Cookie Policy</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </footer>
+    <div id="success-modal" class="fixed inset-0 flex items-center justify-center z-50 hidden">
+        <div class="absolute inset-0 bg-site-text bg-opacity-50"></div>
+        <div class="bg-site-background rounded-lg shadow-xl p-8 max-w-md w-full relative z-10">
+            <div class="text-center">
+                <div class="w-16 h-16 bg-section-background rounded-full flex items-center justify-center mx-auto mb-4">
+                    <i class="ri-check-line ri-2x"></i>
+                </div>
+                <h3 class="text-xl font-bold text-heading-color mb-2">Request Submitted Successfully!</h3>
+                <p class="text-site-text mb-6">Thank you for your submission. We'll review your items and get back to you within 24 hours with an offer.</p>
+                <button id="close-modal" class="bg-primary-button-bg text-primary-button-text px-6 py-2 rounded-button font-medium hover:bg-primary-button-hover-bg hover:text-primary-button-hover-text transition whitespace-nowrap">Close</button>
+            </div>
+        </div>
+    </div>
+
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Mobile menu functionality
+            const mobileMenuButton = document.getElementById('mobile-menu-button');
+            const mobileMenu = document.getElementById('mobile-menu');
+            const closeMenu = document.getElementById('close-menu');
+            if (mobileMenuButton && mobileMenu && closeMenu) {
+                mobileMenuButton.addEventListener('click', () => {
+                    mobileMenu.classList.remove('hidden');
+                    document.body.style.overflow = 'hidden';
+                });
+                closeMenu.addEventListener('click', () => {
+                    mobileMenu.classList.add('hidden');
+                    document.body.style.overflow = '';
+                });
+                mobileMenu.addEventListener('click', (e) => {
+                    if (e.target === mobileMenu) {
+                        mobileMenu.classList.add('hidden');
+                        document.body.style.overflow = '';
+                    }
+                });
+            }
+
+            // FAQ toggle functionality
+            const faqToggles = document.querySelectorAll('.faq-toggle');
+            faqToggles.forEach(toggle => {
+                toggle.addEventListener('click', () => {
+                    const content = toggle.nextElementSibling;
+                    const icon = toggle.querySelector('.faq-icon');
+
+                    // Close other open FAQs
+                    faqToggles.forEach(otherToggle => {
+                        if (otherToggle !== toggle) {
+                            const otherContent = otherToggle.nextElementSibling;
+                            const otherIcon = otherToggle.querySelector('.faq-icon');
+                            otherContent.classList.add('hidden');
+                            otherIcon.classList.remove('ri-arrow-up-s-line');
+                            otherIcon.classList.add('ri-arrow-down-s-line');
+                        }
+                    });
+
+                    // Toggle current FAQ
+                    content.classList.toggle('hidden');
+                    icon.classList.toggle('ri-arrow-down-s-line');
+                    icon.classList.toggle('ri-arrow-up-s-line');
+                });
+            });
+
+
+            // Form validation and progress tracking
+            const form = document.getElementById('junk-form');
+            const progressBar = document.querySelector('.progress-bar');
+            const requiredFields = form.querySelectorAll('[required]');
+            const totalFields = requiredFields.length;
+
+            function updateProgress() {
+                let filledFields = 0;
+                requiredFields.forEach(field => {
+                    if (field.value.trim() !== '') {
+                        filledFields++;
+                    }
+                });
+                const progress = (filledFields / totalFields) * 100;
+                progressBar.style.width = `${progress}%`;
+            }
+
+            // Initial progress update on page load
+            updateProgress();
+
+            requiredFields.forEach(field => {
+                field.addEventListener('input', updateProgress);
+            });
+
+            // File upload functionality (Placeholder - needs actual implementation)
+            // This part of the script was incomplete in the original code.
+            // I've commented out or removed parts related to file upload
+            // as they were not fully implemented and not related to colors.
+            // If you need file upload, you'll need to complete this JS logic.
+
+            // Form submission (Placeholder - needs actual submission logic)
+            form.addEventListener('submit', function(e) {
+                e.preventDefault();
+
+                // Basic form validation
+                let isValid = true;
+                requiredFields.forEach(field => {
+                    if (field.value.trim() === '') {
+                        isValid = false;
+                        field.classList.add('border-red-500'); // Highlight empty required fields
+                    } else {
+                        field.classList.remove('border-red-500');
+                    }
+                });
+
+                if (!isValid) {
+                    alert("Please fill out all required fields.");
+                    return;
+                }
+
+
+                // Show loading state
+                const submitButton = form.querySelector('button[type="submit"]');
+                const originalButtonContent = submitButton.innerHTML; // Save original content
+                submitButton.innerHTML = '<i class="ri-loader-4-line animate-spin mr-2"></i> Submitting...';
+                submitButton.disabled = true;
+
+
+                // --- Replace this with your actual form submission code ---
+                // Example using fetch API (replace with your endpoint)
+                /*
+                const formData = new FormData(form);
+                fetch('your-server-endpoint', {
+                        method: 'POST',
+                        body: formData
+                    })
+                    .then(response => response.json()) // or response.text()
+                    .then(data => {
+                        console.log('Success:', data);
+                        // Assuming success
+                        showSuccessModal();
+                        form.reset(); // Reset the form after success
+                        updateProgress(); // Reset progress bar
+                         // If you had image previews, you'd clear them here
+                         // imagePreviewContainer.innerHTML = '';
+                         // imagePreviewContainer.classList.add('hidden');
+                    })
+                    .catch((error) => {
+                        console.error('Error:', error);
+                        alert('There was an error submitting your request.');
+                    })
+                    .finally(() => {
+                        // Always reset button state
+                        submitButton.innerHTML = originalButtonContent;
+                        submitButton.disabled = false;
+                    });
+                */
+
+                // --- Simulation for demonstration ---
+                // Simulate form submission success after a delay
+                setTimeout(function() {
+                    // Revert button state
+                    submitButton.innerHTML = originalButtonContent;
+                    submitButton.disabled = false;
+
+                    // Show success modal
+                    showSuccessModal();
+
+                    // Reset form (keep this if using the simulation)
+                    form.reset();
+                    updateProgress(); // Reset progress bar
+                    // If you had image previews, you'd clear them here
+                    // imagePreviewContainer.innerHTML = '';
+                    // imagePreviewContainer.classList.add('hidden');
+
+                }, 2000); // Simulate a 2-second delay
+
+            });
+
+            // Success Modal Functionality
+            const successModal = document.getElementById('success-modal');
+            const closeModalButton = document.getElementById('close-modal');
+
+            function showSuccessModal() {
+                successModal.classList.remove('hidden');
+                document.body.style.overflow = 'hidden'; // Prevent scrolling when modal is open
+            }
+
+            function hideSuccessModal() {
+                successModal.classList.add('hidden');
+                document.body.style.overflow = ''; // Restore scrolling
+            }
+
+            closeModalButton.addEventListener('click', hideSuccessModal);
+
+            // Close modal if clicked outside the content
+            successModal.addEventListener('click', function(e) {
+                if (e.target === successModal) {
+                    hideSuccessModal();
+                }
+            });
+
+
+            // Footer "More" Services Toggle
+            window.toggleServices = function() {
+                const extraServices = document.getElementById('extra-services');
+                const moreButton = document.querySelector('.footer-more-button');
+                if (extraServices.classList.contains('hidden')) {
+                    extraServices.classList.remove('hidden');
+                    moreButton.textContent = 'Less';
+                } else {
+                    extraServices.classList.add('hidden');
+                    moreButton.textContent = 'More';
+                }
+            }
+
+        });
+    </script>
+    <script>
+  document.getElementById('junk-form').addEventListener('submit', function(event) {
+    event.preventDefault();
+
+    emailjs.sendForm('service_utyb89f', 'template_aogfsoz', this)
+      .then(function(response) {
+        alert('Your request has been sent successfully!');
+        console.log('SUCCESS!', response.status, response.text);
+      }, function(error) {
+        alert('Oops! Something went wrong. Please try again.');
+        console.log('FAILED...', error);
+      });
+
+    this.reset(); // Optional: Reset the form after submission
+  });
+    </script>
+
+</body>
+
+</html>
